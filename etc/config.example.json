@@ -1,0 +1,4 @@
+{
+  "secret_key": "eintrag-insecrure-secret",
+  "database_connection_string": "PostgreSQL DSN"
+}
