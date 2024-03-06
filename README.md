@@ -1,4 +1,4 @@
-# Die Eintrag
+# Der Eintrag
 
 A lightweight auth service written in Go.
 
