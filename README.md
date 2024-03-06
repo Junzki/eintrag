@@ -3,11 +3,14 @@
 A lightweight auth service written in Go.
 
 ## Usage
-1. Execute all SQL files in the `migrations/` directory
-2. Copy `etc/config.example.json`, and write your own `config.json` 
-   1. Generate a secret key and fill into the `secret_key` field
-   2. Add your own database connection to `database_connection_string` (Note: Only **PostgreSQL** supported)
-3. Execute the `eintrag` executable with following command
+1. Execute all SQL files in the `migrations/` directory.
+2. Generate configuration JSON with config generator. This will create a new `config.json` at your preferred location, with unique random secret key attached.
+   ```bash
+   $ eintrag-config --config /path/to/your/config.json
+   ```
+   
+3. Add your own database connection to `database_connection_string` to your `config.json` (Note: Only **PostgreSQL** supported)
+4. Execute the `eintrag` executable with following command
    ```bash
    $ eintrag --config /path/to/your/config.json
    ```
