@@ -3,10 +3,12 @@ package main
 import (
 	"crypto/rand"
 	"eintrag/pkg/eintrag"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
+	"github.com/jamesruan/sodium"
 	"math/big"
 	"os"
 )
@@ -17,6 +19,7 @@ const Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 func main() {
 	configFile := flag.String("config", "config.json", "")
 	doGenerate := flag.Bool("generate-key", false, "")
+	updateMaster := flag.Bool("generate-master-key", false, "")
 	flag.Parse()
 
 	config := eintrag.Config{
@@ -30,12 +33,17 @@ func main() {
 			panic(err)
 		}
 
-		if *doGenerate {
+		if *doGenerate || "" == config.SigningKey {
 			config.SigningKey, _ = generateKey()
+		}
+
+		if *updateMaster || "" == config.MasterKey {
+			config.MasterKey = generateMasterKey()
 		}
 
 	} else if errors.Is(err, os.ErrNotExist) {
 		config.SigningKey, _ = generateKey()
+		config.MasterKey = generateMasterKey()
 	} else {
 		panic(err)
 	}
@@ -79,4 +87,13 @@ func generateKey() (string, error) {
 	}
 
 	return string(ret), nil
+}
+
+func generateMasterKey() string {
+	masterKey := sodium.MakeMasterKey()
+
+	output := make([]byte, base64.StdEncoding.EncodedLen(len(masterKey.Bytes)))
+	base64.StdEncoding.Encode(output, masterKey.Bytes)
+
+	return string(output)
 }

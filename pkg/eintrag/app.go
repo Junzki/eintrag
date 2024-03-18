@@ -14,6 +14,7 @@ type Config struct {
 	Listen                   string `json:"listen"`
 	Port                     uint16 `json:"port"`
 	SigningKey               string `json:"secret_key"`
+	MasterKey                string `json:"master_key"`
 	DatabaseType             string `json:"database_type" default:"postgres"`
 	DatabaseConnectionString string `json:"database_connection_string"`
 }
@@ -56,6 +57,10 @@ func NewApp(configFile *string) App {
 	}
 
 	eintrag.InitDbConn(app.config.DatabaseConnectionString)
+	err := eintrag.SetMasterKey(app.config.MasterKey)
+	if nil != err {
+		panic(err)
+	}
 
 	return app
 }
